@@ -14,39 +14,50 @@ function getHumanChoice(){
     return humanChoice.toLowerCase();
 }
 
-
 function playGame(){
-    let rounds = 0;
     let humanScore = 0;
     let computerScore = 0;
+    let gameOver = false;
+    const choice = document.querySelector(".choices");
+    const results = document.createElement("div");
+    const roundResult = document.createElement("p");
+    const score = document.createElement("p");
+    const winner = document.createElement("P")
+    results.appendChild(roundResult);
+    results.appendChild(score);
+    results.appendChild(winner);
+    choice.after(results);
     function playRound(humanChoice, computerChoice){
         if (humanChoice === computerChoice){
-            console.log("Draw!");
+            roundResult.textContent = "Draw";
         }else if((humanChoice === "rock" && computerChoice === "scissors")
             ||(humanChoice === "paper" && computerChoice === "rock")
             ||(humanChoice === "scissors" && computerChoice === "paper")){
                 humanScore++;
-                console.log(`You win! ${humanChoice} beats ${computerChoice}.`);
+                roundResult.textContent = `You win! ${humanChoice} beats ${computerChoice}.`;
+                
         }else{
             computerScore++;
-            console.log(`You lose! ${computerChoice} beats ${humanChoice}.`);
+            roundResult.textContent = `You lose! ${computerChoice} beats ${humanChoice}.`;
         }
+        score.textContent = `Your score ${humanScore} | Computer score: ${computerScore}`
     }
-
-    do{
-        let computerChoice = getComputerChoice();
-        let humanChoice = getHumanChoice();
-        playRound(humanChoice, computerChoice); 
-        rounds++;
-    }while(rounds < 5);
-    
-    if (humanScore > computerScore) {
-        console.log("You won the game!");
-    }else if (computerScore > humanScore) {
-        console.log("Computer won the game!");
-    }else {
-        console.log("The game ended in a tie!");
-    }
+    choice.addEventListener("click", (event)=>{
+        if (gameOver){
+            return;
+        }
+        const humanChoice = event.target.id;
+        if (["rock","paper","scissors"].includes(humanChoice)){
+            playRound(humanChoice, getComputerChoice());
+        if (humanScore === 5) {
+            winner.textContent = "You won the game!";
+            gameOver = true;
+        } else if (computerScore === 5) {
+            winner.textContent = "Computer won the game!";
+            gameOver = true;
+        }
+        } 
+    })
 }
 
 playGame();
